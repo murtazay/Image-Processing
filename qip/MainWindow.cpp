@@ -322,7 +322,7 @@ void
 MainWindow::reset()
 {
 
-//	m_imageFilterType[ m_imageFilterName[index] ]->reset();
+    m_imageFilterType[ m_code ]->reset();
 }
 
 

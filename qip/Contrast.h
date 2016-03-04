@@ -15,6 +15,7 @@
 class Contrast : public ImageFilter {
 	Q_OBJECT
 
+    enum{BRIGHTNESS,CONTRAST,REFRENCE};
 public:
 	Contrast	(QWidget *parent = 0);		// constructor
 	QGroupBox*	controlPanel	();		// create control panel
@@ -22,12 +23,17 @@ public:
 	void		reset		();		// reset parameters
 
 protected:
-	void contrast(ImagePtr I1, double brightness, double contrast, ImagePtr I2);
+    void contrast(ImagePtr I1, double brightness, double contrast, double refrence, ImagePtr I2);
 
 protected slots:
+    void setBrightness(int);
+    void setContrast(int);
+    void setRefrence(int);
 
 private:
-	// brightness/contrast controls
+    // brightness/contrast controls
+    QSlider     *m_slider[3] ;
+    QSpinBox    *m_spinBox[3];
 	QSlider		*m_sliderB ;	// brightness slider
 	QSlider		*m_sliderC ;	// contrast   slider
 	QSpinBox	*m_spinBoxB;	// brightness spin box
