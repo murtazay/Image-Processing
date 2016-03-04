@@ -73,6 +73,7 @@ private:
 	QAction*		m_actionQuit;
 	QAction*		m_actionThreshold;
 	QAction*		m_actionContrast ;
+    QAction*        m_actionQuantization;
 
 	// homework objects
 	ImageFilter*		m_imageFilterType[MAXFILTERS];

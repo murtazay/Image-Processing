@@ -5,6 +5,7 @@
 // Contrast.h - Contrast widget
 //
 // Written by: George Wolberg, 2016
+// Edited  by: Murtaza Yaqoob, 2016
 // ======================================================================
 
 #ifndef CONTRAST_H
@@ -34,11 +35,6 @@ private:
     // brightness/contrast controls
     QSlider     *m_slider[3] ;
     QSpinBox    *m_spinBox[3];
-	QSlider		*m_sliderB ;	// brightness slider
-	QSlider		*m_sliderC ;	// contrast   slider
-	QSpinBox	*m_spinBoxB;	// brightness spin box
-	QSpinBox	*m_spinBoxC;	// contrast   spin box
-
 	// widgets and groupbox
 	QGroupBox	*m_ctrlGrp;	// groupbox for panel
 };

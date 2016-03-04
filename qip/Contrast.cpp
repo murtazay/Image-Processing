@@ -5,6 +5,7 @@
 // Contrast.cpp - Brightness/Contrast widget.
 //
 // Written by: George Wolberg, 2016
+// Edited  by: Murtaza Yaqoob, 2016
 // ======================================================================
 
 #include "MainWindow.h"
@@ -165,7 +166,6 @@ Contrast::contrast(ImagePtr I1, double brightness, double contrast, double refre
     int i, lut[MXGRAY];
     for(i=0;i<MXGRAY;++i){
         lut[i] = CLIP((i - refrence) * contrast + refrence + brightness,0,255);
-
     }
 
     int type;

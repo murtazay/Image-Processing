@@ -5,14 +5,16 @@
 // MainWindow.cpp - MainWindow class
 //
 // Written by: George Wolberg, 2016
+// Edited  by: Murtaza Yaqoob, 2016
 // ===============================================================
 
 #include "MainWindow.h"
 #include "Dummy.h"
 #include "Threshold.h"
 #include "Contrast.h"
+#include "Quantization.h"
 
-enum {DUMMY, THRESHOLD, CONTRAST};
+enum {DUMMY, THRESHOLD, CONTRAST, QUANTIZATION};
 QString GroupBoxStyle = "QGroupBox {				\
 			border: 2px solid gray;			\
 			border-radius: 9px;			\
@@ -74,6 +76,10 @@ MainWindow::createActions()
 	m_actionContrast->setShortcut(tr("Ctrl+C"));
 	m_actionContrast->setData(CONTRAST);
 
+    m_actionQuantization = new QAction("&Quantization", this);
+    m_actionQuantization->setShortcut(tr("Ctrl+Q"));
+    m_actionQuantization->setData(QUANTIZATION);
+
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
 	connect(menuBar(), SIGNAL(triggered(QAction*)), this, SLOT(execute(QAction*)));
@@ -96,8 +102,9 @@ MainWindow::createMenus()
 
 	// Point Ops menu
 	m_menuPtOps = menuBar()->addMenu("&Point Ops");
-	m_menuPtOps->addAction(m_actionThreshold);
-	m_menuPtOps->addAction(m_actionContrast );
+    m_menuPtOps->addAction(m_actionThreshold    );
+    m_menuPtOps->addAction(m_actionContrast     );
+    m_menuPtOps->addAction(m_actionQuantization );
 }
 
 
@@ -139,17 +146,20 @@ MainWindow::createGroupPanel()
 	groupBox->setMinimumWidth(350);
 
 	// filter's enum indexes into container of image filters
-	m_imageFilterType[DUMMY	   ] = new Dummy;
-	m_imageFilterType[THRESHOLD] = new Threshold;
-	m_imageFilterType[CONTRAST ] = new Contrast;
+    m_imageFilterType[DUMMY	       ] = new Dummy;
+    m_imageFilterType[THRESHOLD    ] = new Threshold;
+    m_imageFilterType[CONTRAST     ] = new Contrast;
+    m_imageFilterType[QUANTIZATION ] = new Quantization;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
 
 	// add filter control panels to stacked widget
-	m_stackWidgetPanels->addWidget(m_imageFilterType[DUMMY    ]->controlPanel());
-	m_stackWidgetPanels->addWidget(m_imageFilterType[THRESHOLD]->controlPanel());
-	m_stackWidgetPanels->addWidget(m_imageFilterType[CONTRAST ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[DUMMY        ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[THRESHOLD    ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[CONTRAST     ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
+
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(0);

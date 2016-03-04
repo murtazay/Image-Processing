@@ -34,7 +34,8 @@ HEADERS +=	MainWindow.h	\
 		ImageFilter.h	\
 		Dummy.h		\
 		Threshold.h	\
-		Contrast.h	\
+		Contrast.h \
+    Quantization.h
   
 		
 SOURCES +=	main.cpp	\ 
@@ -42,5 +43,6 @@ SOURCES +=	main.cpp	\
 		ImageFilter.cpp	\
 		Dummy.cpp	\
 		Threshold.cpp	\
-		Contrast.cpp	\
+		Contrast.cpp \
+    Quantization.cpp
 
