@@ -1,6 +1,6 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2016 by George Wolberg
+// Copyright (C) 2016 by Murtaza Yaqoob
 //
 // Quantization.h - Quantization widget
 //

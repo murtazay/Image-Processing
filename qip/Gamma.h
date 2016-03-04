@@ -1,12 +1,38 @@
-#ifndef GAMMACORRECTION_H
-#define GAMMACORRECTION_H
+// ======================================================================
+// IMPROC: Image Processing Software Package
+// Copyright (C) 2016 by George Wolberg
+//
+// Gamma.h - Gamma widget
+//
+// Written  by: Murtaza Yaqoob, 2016
+// ======================================================================
+#ifndef GAMMA_H
+#define GAMMA_H
 
-#include <QObject>
+#include "ImageFilter.h"
 
-class GammaCorrection : public ImageFilter
-{
+class Gamma : public ImageFilter {
+    Q_OBJECT
+
 public:
-    GammaCorrection();
+    Gamma       (QWidget *parent = 0          );    // constructor
+    QGroupBox*	controlPanel	             ();	// create control panel
+    bool		applyFilter(ImagePtr, ImagePtr);    // apply filter to input to init output
+    void		reset		                 ();	// reset parameters
+
+protected:
+    void gamma(ImagePtr I1, double alpha, ImagePtr I2);
+
+protected slots:
+    void setAlpha(int);
+
+private:
+
+    // brightness/contrast controls
+    QSlider     *m_slider ;
+    QSpinBox    *m_spinBox;
+    // widgets and groupbox
+    QGroupBox	*m_ctrlGrp;	// groupbox for panel
 };
 
-#endif // GAMMACORRECTION_H
+#endif // GAMMA_H

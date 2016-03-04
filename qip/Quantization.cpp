@@ -1,6 +1,6 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2016 by George Wolberg
+// Copyright (C) 2016 by Murtaza Yaqoob
 //
 // Qunatization.cpp - Quantization widget.
 //
@@ -23,14 +23,14 @@ Quantization::Quantization(QWidget *parent)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Quantization::createGroupBox:
+// Quantization::controlPanel:
 //
 // Create group box for control panel.
 //
 QGroupBox *Quantization::controlPanel()
 {
     // init group box
-    m_ctrlGrp = new QGroupBox("Contrast");
+    m_ctrlGrp = new QGroupBox("Quantization");
 
     // INSERT YOUR CODE HERE
     // init widgets
@@ -103,7 +103,7 @@ void Quantization::reset()
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// qunatize:
+// quantize:
 //
 // INSERT YOUR CODE HERE.
 //

@@ -13,8 +13,9 @@
 #include "Threshold.h"
 #include "Contrast.h"
 #include "Quantization.h"
+#include "Gamma.h"
 
-enum {DUMMY, THRESHOLD, CONTRAST, QUANTIZATION};
+enum {DUMMY, THRESHOLD, CONTRAST, QUANTIZATION, GAMMA};
 QString GroupBoxStyle = "QGroupBox {				\
 			border: 2px solid gray;			\
 			border-radius: 9px;			\
@@ -80,6 +81,10 @@ MainWindow::createActions()
     m_actionQuantization->setShortcut(tr("Ctrl+Q"));
     m_actionQuantization->setData(QUANTIZATION);
 
+    m_actionGamma = new QAction("&Gamma", this);
+    m_actionGamma->setShortcut(tr("Ctrl+G"));
+    m_actionGamma->setData(GAMMA);
+
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
 	connect(menuBar(), SIGNAL(triggered(QAction*)), this, SLOT(execute(QAction*)));
@@ -105,6 +110,7 @@ MainWindow::createMenus()
     m_menuPtOps->addAction(m_actionThreshold    );
     m_menuPtOps->addAction(m_actionContrast     );
     m_menuPtOps->addAction(m_actionQuantization );
+    m_menuPtOps->addAction(m_actionGamma        );
 }
 
 
@@ -150,6 +156,7 @@ MainWindow::createGroupPanel()
     m_imageFilterType[THRESHOLD    ] = new Threshold;
     m_imageFilterType[CONTRAST     ] = new Contrast;
     m_imageFilterType[QUANTIZATION ] = new Quantization;
+    m_imageFilterType[GAMMA        ] = new Gamma;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -159,6 +166,7 @@ MainWindow::createGroupPanel()
     m_stackWidgetPanels->addWidget(m_imageFilterType[THRESHOLD    ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[CONTRAST     ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[GAMMA        ]->controlPanel());
 
 
 	// display blank dummmy panel initially
