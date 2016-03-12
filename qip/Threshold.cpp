@@ -160,6 +160,4 @@ Threshold::threshold(ImagePtr I1, int thr, ImagePtr I2) {
 // Reset parameters.
 //
 void
-Threshold::reset() {
-    changeThr(MXGRAY>>1);
-}
+Threshold::reset() {}

@@ -1,6 +1,6 @@
 TEMPLATE    = app
 TARGET      = qip
-QT 	   += widgets 
+QT 	   += widgets printsupport
 OBJECTS_DIR = ./obj
 MOC_DIR     = ./moc
 
@@ -32,19 +32,21 @@ unix:!macx {
 # Input
 HEADERS +=	MainWindow.h	\
 		ImageFilter.h	\
+		qcustomplot.h	\
 		Dummy.h		\
 		Threshold.h	\
-		Contrast.h \
-    Quantization.h \
-    Gamma.h
-  
+		Contrast.h	\
+    Gamma.h \
+    Quantization.h
+
 		
 SOURCES +=	main.cpp	\ 
 		MainWindow.cpp 	\
 		ImageFilter.cpp	\
+		qcustomplot.cpp	\
 		Dummy.cpp	\
 		Threshold.cpp	\
-		Contrast.cpp \
-    Quantization.cpp \
-    Gamma.cpp
+		Contrast.cpp	\
+    Gamma.cpp \
+    Quantization.cpp
 

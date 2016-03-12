@@ -5,17 +5,20 @@
 // MainWindow.cpp - MainWindow class
 //
 // Written by: George Wolberg, 2016
-// Edited  by: Murtaza Yaqoob, 2016
 // ===============================================================
 
 #include "MainWindow.h"
 #include "Dummy.h"
 #include "Threshold.h"
 #include "Contrast.h"
-#include "Quantization.h"
 #include "Gamma.h"
+#include "Quantization.h"
 
-enum {DUMMY, THRESHOLD, CONTRAST, QUANTIZATION, GAMMA};
+using namespace IP;
+
+enum {DUMMY, THRESHOLD, CONTRAST, GAMMA, QUANTIZATION};
+enum {RGB, R, G, B, GRAY};
+
 QString GroupBoxStyle = "QGroupBox {				\
 			border: 2px solid gray;			\
 			border-radius: 9px;			\
@@ -30,7 +33,8 @@ MainWindow *g_mainWindowP = NULL;
 //
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent),
-	  m_code(-1)
+	  m_code(-1),
+	  m_histoColor(0)
 {
 	setWindowTitle("Capstone Project");
 
@@ -77,13 +81,13 @@ MainWindow::createActions()
 	m_actionContrast->setShortcut(tr("Ctrl+C"));
 	m_actionContrast->setData(CONTRAST);
 
-    m_actionQuantization = new QAction("&Quantization", this);
-    m_actionQuantization->setShortcut(tr("Ctrl+Q"));
-    m_actionQuantization->setData(QUANTIZATION);
-
     m_actionGamma = new QAction("&Gamma", this);
     m_actionGamma->setShortcut(tr("Ctrl+G"));
-    m_actionGamma->setData(GAMMA);
+    m_actionGamma->setData(CONTRAST);
+
+    m_actionQuantization = new QAction("&Quantization", this);
+    m_actionQuantization->setShortcut(tr("Ctrl+U"));
+    m_actionQuantization->setData(CONTRAST);
 
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
@@ -107,10 +111,10 @@ MainWindow::createMenus()
 
 	// Point Ops menu
 	m_menuPtOps = menuBar()->addMenu("&Point Ops");
-    m_menuPtOps->addAction(m_actionThreshold    );
-    m_menuPtOps->addAction(m_actionContrast     );
+	m_menuPtOps->addAction(m_actionThreshold);
+	m_menuPtOps->addAction(m_actionContrast );
+    m_menuPtOps->addAction(m_actionGamma );
     m_menuPtOps->addAction(m_actionQuantization );
-    m_menuPtOps->addAction(m_actionGamma        );
 }
 
 
@@ -149,14 +153,14 @@ MainWindow::createGroupPanel()
 {
 	// init group box
 	QGroupBox *groupBox = new QGroupBox;
-	groupBox->setMinimumWidth(350);
+	groupBox->setMinimumWidth(400);
 
 	// filter's enum indexes into container of image filters
-    m_imageFilterType[DUMMY	       ] = new Dummy;
-    m_imageFilterType[THRESHOLD    ] = new Threshold;
-    m_imageFilterType[CONTRAST     ] = new Contrast;
-    m_imageFilterType[QUANTIZATION ] = new Quantization;
-    m_imageFilterType[GAMMA        ] = new Gamma;
+    m_imageFilterType[DUMMY         ] = new Dummy;
+    m_imageFilterType[THRESHOLD     ] = new Threshold;
+    m_imageFilterType[CONTRAST      ] = new Contrast;
+    m_imageFilterType[GAMMA         ] = new Gamma;
+    m_imageFilterType[QUANTIZATION  ] = new Quantization;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -165,9 +169,8 @@ MainWindow::createGroupPanel()
     m_stackWidgetPanels->addWidget(m_imageFilterType[DUMMY        ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[THRESHOLD    ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[CONTRAST     ]->controlPanel());
-    m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[GAMMA        ]->controlPanel());
-
+    m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(0);
@@ -177,10 +180,41 @@ MainWindow::createGroupPanel()
 	hbox->addWidget(createDisplayButtons());
 	hbox->addWidget(createModeButtons   ());
 
+        // create histogram plot
+        m_histogram = new QCustomPlot;
+
+	// set histogram title
+        m_histogram->plotLayout()->insertRow(0);
+        m_histogram->plotLayout()->addElement(0, 0, new QCPPlotTitle(m_histogram,"Histogram"));
+
+        // assign label axes
+        m_histogram->xAxis->setLabel("Intensity");
+        m_histogram->yAxis->setLabel("Frequency");
+        m_histogram->xAxis->setAutoTickStep(0);
+        m_histogram->xAxis->setTickStep(32.);
+
+        // set axes ranges, so we see all the data
+        m_histogram->xAxis->setRange(0, MXGRAY);
+        m_histogram->yAxis->setRange(0, MXGRAY);
+	m_histogram->setMinimumHeight(400);
+	m_histogram->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+	// create extension and insert histogram
+	m_extension = new QWidget;
+	QVBoxLayout *vBox2 = new QVBoxLayout(m_extension);
+	vBox2->addWidget(m_histogram);
+
+	// start dialog with hidden histogram
+	m_extension->hide();
+
+	// set signal-slot connection
+	connect(m_checkboxHisto, SIGNAL(stateChanged(int)), this, SLOT(setHisto(int)));
+
 	// assemble stacked widget in vertical layout
 	QVBoxLayout *vbox = new QVBoxLayout;
 	vbox->addLayout(hbox);
 	vbox->addWidget(m_stackWidgetPanels);
+	vbox->addWidget(m_extension);
 	vbox->addStretch(1);
 	vbox->addLayout(createExitButtons());
 	groupBox->setLayout(vbox);
@@ -252,10 +286,15 @@ MainWindow::createDisplayButtons()
 	// set input radio button to be default
 	m_radioDisplay[0]->setChecked(true);
 
+	// create histogram checkbox
+	m_checkboxHisto = new QCheckBox("Histogram");
+	m_checkboxHisto ->setCheckState (Qt::Unchecked);
+
 	// assemble radio buttons into vertical widget
 	QVBoxLayout *vbox = new QVBoxLayout;
 	vbox->addWidget(m_radioDisplay[0]);
 	vbox->addWidget(m_radioDisplay[1]);
+	vbox->addWidget(m_checkboxHisto);
 	groupBox->setLayout(vbox);
 
 	// init signal/slot connections
@@ -294,6 +333,7 @@ MainWindow::createModeButtons()
 	QVBoxLayout *vbox = new QVBoxLayout;
 	vbox->addWidget(m_radioMode[0]);
 	vbox->addWidget(m_radioMode[1]);
+	vbox->addWidget(m_radioMode[1]);	// redundant radiobutton won't display; placeholder
 	groupBox->setLayout(vbox);
 
 	// init signal/slot connections
@@ -450,7 +490,131 @@ void MainWindow::display(int flag)
 	// assign pixmap to label widget for display
 	QLabel *widget = (QLabel *) m_stackWidgetImages->currentWidget();
 	widget->setPixmap(p);
+
+	// compute histogram if histogram checkbox is set
+	if(m_checkboxHisto->isChecked())
+		displayHistogram(I);
 }
+
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MainWindow::displayHistogram:
+//
+// Display image histogram in control panel
+//
+void MainWindow::displayHistogram(ImagePtr I)
+{
+	int color;
+	int histo[MXGRAY];
+	int yminChannel=0, ymaxChannel=0;
+	int yminHisto=0,   ymaxHisto=0;
+	int xmin, xmax;
+	QVector<double> x, y;
+	char buf[MXSTRLEN];
+
+	// clear any previous histogram plots
+	m_histogram->clearGraphs();
+
+	// visit all selected channels in I: RGB, R, G, B, or gray
+	for(int ch=0; ch<I->maxChannel(); ch++) {
+		// compute histogram
+		IP_histogram(I, ch, histo, MXGRAY, m_histoXmin[ch], m_histoXmax[ch]);
+
+		// init min and max for current channel
+		yminChannel = ymaxChannel = histo[0];
+
+		// init min and max histogram value among all channels
+		if(!ch) yminHisto = ymaxHisto = histo[0];
+
+		// clear vector of x- and y-coordinates
+		x.clear();
+		y.clear();
+
+		// visit all histogram entries and save into x and y vectors
+		for(int i=0; i<MXGRAY; i++) {
+			x.push_back(i);
+			y.push_back(histo[i]);
+
+			// save channel min and max
+			yminChannel = MIN(yminChannel, histo[i]);
+			ymaxChannel = MAX(ymaxChannel, histo[i]);
+		}
+
+		// add new graph for histogram channel
+        	m_histogram->addGraph();
+
+		// if single channel was selected, it is in channel 0 and should
+		// be drawn in corresponding color (based on m_histoColor).
+		// Else, color is based on ch value: 0,1,2 corresponds to R,G,B
+		// Add 1 to ch so that ch=1 corresponds to green, and ch=2 to blue
+		if(!ch) color = m_histoColor;
+		else	color = ch + 1;
+
+		// convert xmin, xmax of channel into int
+		xmin = m_histoXmin[ch];
+		xmax = m_histoXmax[ch];
+
+		// set histogram name and color
+		switch(color) {
+		case RGB:
+		case R: sprintf(buf, "R: X[%d,%d] Y[%d,%d]",
+			xmin, xmax, yminChannel, ymaxChannel);
+			m_histogram->graph(ch)->setName(buf);
+			m_histogram->graph(ch)->setPen (QPen(Qt::red  ));
+			break;
+		case G: sprintf(buf, "G: X[%d,%d] Y[%d,%d]",
+			xmin, xmax, yminChannel, ymaxChannel);
+			m_histogram->graph(ch)->setName(buf);
+			m_histogram->graph(ch)->setPen(QPen(Qt::green));
+			break;
+		case B: sprintf(buf, "B: X[%d,%d] Y[%d,%d]",
+			xmin, xmax, yminChannel, ymaxChannel);
+			m_histogram->graph(ch)->setName(buf);
+			m_histogram->graph(ch)->setPen(QPen(Qt::blue ));
+			break;
+		case GRAY:
+			sprintf(buf, "Gray: X[%d,%d] Y[%d,%d]",
+			xmin, xmax, yminChannel, ymaxChannel);
+			m_histogram->graph(ch)->setName(buf);
+			m_histogram->graph(ch)->setPen(QPen(Qt::black ));
+			break;
+		}
+
+		// set data
+		m_histogram->graph(ch)->setData(x,y);
+
+		// update min and max histogram values among all channels
+		yminHisto = MIN(yminChannel, yminHisto);
+		ymaxHisto = MAX(ymaxChannel, ymaxHisto);
+	}
+
+	// turn on legend to print histogram params
+	m_histogram->legend->setVisible(true);
+
+	// set y-axis range and replot
+	m_histogram->yAxis->setRange(yminHisto, ymaxHisto);
+	m_histogram->rescaleAxes();
+	m_histogram->replot();
+}
+
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// MainWindow::setHisto:
+//
+// Slot to show/hide histogram and set/reset histogram checkbox.
+//
+void
+MainWindow::setHisto(int flag)
+{
+        m_extension->setVisible(flag);
+        if(flag)
+                m_checkboxHisto->setCheckState(Qt::Checked);
+        else    m_checkboxHisto->setCheckState(Qt::Unchecked);
+        preview();
+}
+
 
 
 
@@ -470,6 +634,10 @@ void MainWindow::mode(int flag)
 	if(flag)
 		IP_castImage(m_imageIn,  BW_IMAGE, m_imageSrc);
 	else	IP_castImage(m_imageIn, RGB_IMAGE, m_imageSrc);
+
+	if(m_imageSrc->imageType() == BW_IMAGE)
+		m_histoColor = GRAY;	// gray
+	else	m_histoColor = 0;	// RGB
 
 	// re-apply filter for changed mode
 	if(m_code > 0)

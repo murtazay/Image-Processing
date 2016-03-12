@@ -37,7 +37,7 @@ QGroupBox *Gamma::controlPanel()
     // init widgets
     // create label
     QLabel *label = new QLabel;
-    label->setText("Alpha");
+    label->setText("Gamma");
 
     // create sliders
     m_slider = new QSlider(Qt::Horizontal, m_ctrlGrp);

@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=c++0x -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -IIP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore -Imoc -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++
+INCPATH       = -I. -IIP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore -Imoc -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++
 QMAKE         = /usr/local/Qt5.5.1/5.5/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -33,10 +33,10 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = qip1.0.0
-DISTDIR = /home/surface/wolberg/course/capstone/projects/2016/qip/obj/qip1.0.0
+DISTDIR = /home/gemini/wolberg/course/capstone/projects/2016/qip/obj/qip1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -Wl,-rpath,/usr/local/Qt5.5.1/5.5/gcc_64 -Wl,-rpath,/usr/local/Qt5.5.1/5.5/gcc_64/lib
-LIBS          = $(SUBLIBS) -L./IP/linux/lib -lIP_d -L/usr/local/Qt5.5.1/5.5/gcc_64/lib -lQt5Widgets -L/usr/lib64 -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L./IP/linux/lib -lIP_d -L/usr/local/Qt5.5.1/5.5/gcc_64/lib -lQt5PrintSupport -L/usr/lib64 -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -51,19 +51,23 @@ OBJECTS_DIR   = obj/
 SOURCES       = main.cpp \
 		MainWindow.cpp \
 		ImageFilter.cpp \
+		qcustomplot.cpp \
 		Dummy.cpp \
 		Threshold.cpp \
 		Contrast.cpp moc/moc_MainWindow.cpp \
+		moc/moc_qcustomplot.cpp \
 		moc/moc_Dummy.cpp \
 		moc/moc_Threshold.cpp \
 		moc/moc_Contrast.cpp
 OBJECTS       = obj/main.o \
 		obj/MainWindow.o \
 		obj/ImageFilter.o \
+		obj/qcustomplot.o \
 		obj/Dummy.o \
 		obj/Threshold.o \
 		obj/Contrast.o \
 		obj/moc_MainWindow.o \
+		obj/moc_qcustomplot.o \
 		obj/moc_Dummy.o \
 		obj/moc_Threshold.o \
 		obj/moc_Contrast.o
@@ -204,11 +208,13 @@ DIST          = /usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/spec_pre.prf \
 		/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/lex.prf \
 		qip.pro MainWindow.h \
 		ImageFilter.h \
+		qcustomplot.h \
 		Dummy.h \
 		Threshold.h \
 		Contrast.h main.cpp \
 		MainWindow.cpp \
 		ImageFilter.cpp \
+		qcustomplot.cpp \
 		Dummy.cpp \
 		Threshold.cpp \
 		Contrast.cpp
@@ -378,6 +384,7 @@ Makefile: qip.pro /usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++/qmake.conf /us
 		/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/yacc.prf \
 		/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/lex.prf \
 		qip.pro \
+		/usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5PrintSupport.prl \
 		/usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Widgets.prl \
 		/usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Gui.prl \
 		/usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Core.prl
@@ -518,6 +525,7 @@ Makefile: qip.pro /usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++/qmake.conf /us
 /usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/yacc.prf:
 /usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/features/lex.prf:
 qip.pro:
+/usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5PrintSupport.prl:
 /usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Widgets.prl:
 /usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Gui.prl:
 /usr/local/Qt5.5.1/5.5/gcc_64/lib/libQt5Core.prl:
@@ -535,8 +543,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents MainWindow.h ImageFilter.h Dummy.h Threshold.h Contrast.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp MainWindow.cpp ImageFilter.cpp Dummy.cpp Threshold.cpp Contrast.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents MainWindow.h ImageFilter.h qcustomplot.h Dummy.h Threshold.h Contrast.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp MainWindow.cpp ImageFilter.cpp qcustomplot.cpp Dummy.cpp Threshold.cpp Contrast.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -559,9 +567,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc/moc_MainWindow.cpp moc/moc_Dummy.cpp moc/moc_Threshold.cpp moc/moc_Contrast.cpp
+compiler_moc_header_make_all: moc/moc_MainWindow.cpp moc/moc_qcustomplot.cpp moc/moc_Dummy.cpp moc/moc_Threshold.cpp moc/moc_Contrast.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_MainWindow.cpp moc/moc_Dummy.cpp moc/moc_Threshold.cpp moc/moc_Contrast.cpp
+	-$(DEL_FILE) moc/moc_MainWindow.cpp moc/moc_qcustomplot.cpp moc/moc_Dummy.cpp moc/moc_Threshold.cpp moc/moc_Contrast.cpp
 moc/moc_MainWindow.cpp: /usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgetsDepends \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtCore \
@@ -1015,8 +1023,514 @@ moc/moc_MainWindow.cpp: /usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidget
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
 		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		MainWindow.h
-	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/surface/wolberg/course/capstone/projects/2016/qip -I/home/surface/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore MainWindow.h -o moc/moc_MainWindow.cpp
+	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/gemini/wolberg/course/capstone/projects/2016/qip -I/home/gemini/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore MainWindow.h -o moc/moc_MainWindow.cpp
+
+moc/moc_qcustomplot.cpp: /usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcoreevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qscopedpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmetatype.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvarlengtharray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontainerfwd.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qisenum.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qshareddata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qhash.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpair.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QWidget \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindowdefs.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmargins.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrect.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsize.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpalette.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qcolor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrgb.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbrush.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmatrix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpolygon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qregion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdatastream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qiodevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qline.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtransform.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainterpath.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfont.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontmetrics.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qcursor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qkeysequence.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvariant.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdebug.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextstream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlocale.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qset.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontiguouscache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qurl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qurlquery.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfiledevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector2d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtouchdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdatetime.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstack.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMargins \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmath.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagelayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagesize.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtCore \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtCoreDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpauseanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpropertyanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeasingcurve.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextcodec.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qendian.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlibraryinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbuffer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdir.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdiriterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileselector.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStringList \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlockfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qloggingcategory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocess.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qresource.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsavefile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsettings.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstandardpaths.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstorageinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtemporarydir.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QScopedPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtemporaryfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlistmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonarray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonvalue.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsondocument.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeventloop.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasictimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcoreapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmetaobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimedata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedmemory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsignalmapper.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtranslator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qwineventnotifier.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimedatabase.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimetype.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfactoryinterface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlibrary.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpluginloader.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/quuid.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstracttransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfinalstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qhistorystate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsignaltransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstatemachine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qexception.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfutureinterface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrunnable.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qresultstore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuturewatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qreadwritelock.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsemaphore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthread.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthreadpool.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthreadstorage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qwaitcondition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydataops.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydatapointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbitarray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcollator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcommandlineoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcommandlineparser.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcryptographichash.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qelapsedtimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlinkedlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qqueue.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qregularexpression.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimeline.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimezone.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qxmlstream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtcoreversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QtGui \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QtGuiDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessible.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessiblebridge.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessibleobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessibleplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbitmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qicon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qiconengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qiconengineplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimageiohandler.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimagereader.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimagewriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmovie.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpicture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpictureformatplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixmapcache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstandarditemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qclipboard.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qdrag.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericpluginfactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qguiapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qinputmethod.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qoffscreensurface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsurface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsurfaceformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglcontext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QSurfaceFormat \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qt_windows.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengles2ext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintDeviceWindow \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintdevicewindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QWindow \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QRect \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintDevice \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QOpenGLContext \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QImage \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrasterwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qscreen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QList \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSize \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSizeF \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QTransform \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsessionmanager.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstylehints.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericmatrix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmatrix4x4.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector3d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector4d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qquaternion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglbuffer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengldebug.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglfunctions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSharedDataPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengltexture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengltimerquery.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbackingstore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpdfwriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qglyphrun.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrawfont.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontdatabase.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextcursor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocument.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstatictext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtexttable.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qdesktopservices.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvalidator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtguiversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolordialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qerrormessage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfiledialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfontdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qinputdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlineedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qframe.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmessagebox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwizard.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector3D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMatrix4x4 \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qslider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractslider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtabbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtabwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qrubberband.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolumnview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdirmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qheaderview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlistview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlistwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtableview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreeview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qaction.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qactiongroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qboxlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgridlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qformlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLayout \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgesture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qshortcut.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstackedlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtooltip.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwhatsthis.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidgetaction.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcommonstyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdrawutil.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qproxystyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QCommonStyle \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstylefactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstylepainter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolormap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcompleter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscroller.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointF \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QScrollerProperties \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMetaType \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVariant \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundogroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundostack.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundoview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcheckbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qpushbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdial.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdockwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfocusframe.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgroupbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlabel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmainwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmdiarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmenu.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmenubar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qplaintextedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtextedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qprogressbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qradiobutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizegrip.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qspinbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsplashscreen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsplitter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstackedwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstatusbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtextbrowser.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
+		qcustomplot.h
+	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/gemini/wolberg/course/capstone/projects/2016/qip -I/home/gemini/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore qcustomplot.h -o moc/moc_qcustomplot.cpp
 
 moc/moc_Dummy.cpp: ImageFilter.h \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
@@ -1471,7 +1985,7 @@ moc/moc_Dummy.cpp: ImageFilter.h \
 		IP/linux/header/ImagePtr.h \
 		IP/linux/header/IPmmch.tpp \
 		Dummy.h
-	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/surface/wolberg/course/capstone/projects/2016/qip -I/home/surface/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Dummy.h -o moc/moc_Dummy.cpp
+	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/gemini/wolberg/course/capstone/projects/2016/qip -I/home/gemini/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Dummy.h -o moc/moc_Dummy.cpp
 
 moc/moc_Threshold.cpp: ImageFilter.h \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
@@ -1926,7 +2440,7 @@ moc/moc_Threshold.cpp: ImageFilter.h \
 		IP/linux/header/ImagePtr.h \
 		IP/linux/header/IPmmch.tpp \
 		Threshold.h
-	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/surface/wolberg/course/capstone/projects/2016/qip -I/home/surface/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Threshold.h -o moc/moc_Threshold.cpp
+	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/gemini/wolberg/course/capstone/projects/2016/qip -I/home/gemini/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Threshold.h -o moc/moc_Threshold.cpp
 
 moc/moc_Contrast.cpp: ImageFilter.h \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
@@ -2381,7 +2895,7 @@ moc/moc_Contrast.cpp: ImageFilter.h \
 		IP/linux/header/ImagePtr.h \
 		IP/linux/header/IPmmch.tpp \
 		Contrast.h
-	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/surface/wolberg/course/capstone/projects/2016/qip -I/home/surface/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Contrast.h -o moc/moc_Contrast.cpp
+	/usr/local/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/usr/local/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/gemini/wolberg/course/capstone/projects/2016/qip -I/home/gemini/wolberg/course/capstone/projects/2016/qip/IP/linux/header -I/usr/local/Qt5.5.1/5.5/gcc_64/include -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui -I/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore Contrast.h -o moc/moc_Contrast.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -2850,7 +3364,38 @@ obj/main.o: main.cpp MainWindow.h \
 		IP/linux/header/ImagePtr.h \
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
-		ImageFilter.h
+		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o main.cpp
 
 obj/MainWindow.o: MainWindow.cpp MainWindow.h \
@@ -3307,6 +3852,37 @@ obj/MainWindow.o: MainWindow.cpp MainWindow.h \
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
 		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		Dummy.h \
 		Threshold.h \
 		Contrast.h
@@ -3766,6 +4342,481 @@ obj/ImageFilter.o: ImageFilter.cpp ImageFilter.h \
 		IP/linux/header/IPmmch.tpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/ImageFilter.o ImageFilter.cpp
 
+obj/qcustomplot.o: qcustomplot.cpp qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qconfig.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfeatures.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemdetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocessordetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcompilerdetection.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypeinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtypetraits.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsysinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlogging.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qflags.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasicatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qgenericatomic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_cxx11.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_gcc.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_msvc.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv7.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv6.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_armv5.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_ia64.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_mips.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_x86.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qatomic_unix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qglobalstatic.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmutex.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qnumeric.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstring.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qchar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrefcount.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringbuilder.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qalgorithms.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qiterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraylist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qregexp.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringmatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcoreevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qscopedpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmetatype.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvarlengtharray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontainerfwd.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qisenum.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedpointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qshareddata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qhash.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpair.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QWidget \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindowdefs.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindowdefs_win.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmargins.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrect.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsize.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpoint.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpalette.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qcolor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrgb.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbrush.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvector.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmatrix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpolygon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qregion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdatastream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qiodevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qline.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtransform.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainterpath.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixelformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfont.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontmetrics.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qcursor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qkeysequence.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvariant.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdebug.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextstream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlocale.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qset.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcontiguouscache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qurl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qurlquery.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfiledevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector2d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtouchdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdatetime.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstack.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMargins \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmath.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagelayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpagesize.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtCore \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtCoreDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpauseanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpropertyanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qvariantanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeasingcurve.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextcodec.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qendian.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlibraryinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbuffer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdir.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qdiriterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileselector.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStringList \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlockfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qloggingcategory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qprocess.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qresource.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsavefile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsettings.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstandardpaths.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstorageinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtemporarydir.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QScopedPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtemporaryfile.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractitemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qidentityproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qitemselectionmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstringlistmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonarray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonvalue.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsondocument.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qjsonobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeventloop.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbasictimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcoreapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmetaobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimedata.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsharedmemory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsignalmapper.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsocketnotifier.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsystemsemaphore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtranslator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qwineventnotifier.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimedatabase.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmimetype.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfactoryinterface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlibrary.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qpluginloader.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/quuid.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstractstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qabstracttransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfinalstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qhistorystate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsignaltransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qstatemachine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qexception.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfutureinterface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qrunnable.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qresultstore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qfuturewatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qreadwritelock.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qsemaphore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthread.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthreadpool.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qthreadstorage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qwaitcondition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydataops.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qarraydatapointer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbitarray.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qbytearraymatcher.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcollator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcommandlineoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcommandlineparser.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qcryptographichash.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qelapsedtimer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qlinkedlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qqueue.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qregularexpression.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimeline.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtimezone.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qxmlstream.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qtcoreversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QtGui \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QtGuiDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessible.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessiblebridge.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessibleobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qaccessibleplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbitmap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qicon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qiconengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qiconengineplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimageiohandler.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimagereader.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qimagewriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmovie.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpicture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpictureformatplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpixmapcache.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstandarditemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qclipboard.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qdrag.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericpluginfactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qguiapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qinputmethod.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qoffscreensurface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsurface.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsurfaceformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglcontext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QSurfaceFormat \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengl.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/qt_windows.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengles2ext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintDeviceWindow \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintdevicewindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QWindow \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QRect \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintDevice \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QOpenGLContext \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QImage \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrasterwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qscreen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QList \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSize \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSizeF \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QTransform \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsessionmanager.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstylehints.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qgenericmatrix.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qmatrix4x4.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector3d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector4d.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qquaternion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglbuffer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengldebug.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglfunctions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QSharedDataPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengltexture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopengltimerquery.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qbackingstore.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpaintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qpdfwriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextformat.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qglyphrun.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qrawfont.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontdatabase.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextcursor.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocument.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qstatictext.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextobject.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextlist.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtexttable.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qdesktopservices.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qvalidator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/qtguiversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolordialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qerrormessage.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfiledialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfontdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qinputdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlineedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qframe.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmessagebox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qprogressdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwizard.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector3D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMatrix4x4 \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleoption.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qslider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractslider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtabbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtabwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qrubberband.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractitemview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolumnview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdirmodel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qheaderview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qitemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlistview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlistwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtableview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtablewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreeview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreewidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qaction.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qactiongroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qapplication.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qboxlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlayoutitem.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgridlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qformlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLayout \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgesture.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qopenglwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qshortcut.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstackedlayout.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtooltip.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwhatsthis.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidgetaction.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcommonstyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdrawutil.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qproxystyle.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QCommonStyle \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstylefactory.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstylepainter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstyleplugin.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcolormap.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcompleter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscroller.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointF \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QScrollerProperties \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMetaType \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVariant \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundogroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundostack.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qundoview.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qbuttongroup.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcheckbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcombobox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qpushbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdial.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdockwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfocusframe.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfontcombobox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgroupbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlabel.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlcdnumber.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmainwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmdiarea.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmenu.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qmenubar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qplaintextedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtextedit.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qprogressbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qradiobutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizegrip.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qspinbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsplashscreen.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsplitter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstackedwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qstatusbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtextbrowser.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbar.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbox.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtoolbutton.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/qcustomplot.o qcustomplot.cpp
+
 obj/Dummy.o: Dummy.cpp MainWindow.h \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgets \
 		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QtWidgetsDepends \
@@ -4220,6 +5271,37 @@ obj/Dummy.o: Dummy.cpp MainWindow.h \
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
 		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		Dummy.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Dummy.o Dummy.cpp
 
@@ -4677,6 +5759,37 @@ obj/Threshold.o: Threshold.cpp MainWindow.h \
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
 		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		Threshold.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Threshold.o Threshold.cpp
 
@@ -5134,11 +6247,45 @@ obj/Contrast.o: Contrast.cpp MainWindow.h \
 		IP/linux/header/IPmmch.tpp \
 		IP/linux/header/IPtoUI.h \
 		ImageFilter.h \
+		qcustomplot.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPointer \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPainter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPaintEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QMouseEvent \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QPixmap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QVector \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QString \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDateTime \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QMultiMap \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QFlags \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtGui/QVector2D \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QStack \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QCache \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrinter \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinter.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QPrintEngine \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintengine.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QtNumeric \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtCore/QPair \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		/usr/local/Qt5.5.1/5.5/gcc_64/include/QtPrintSupport/qtprintsupportversion.h \
 		Contrast.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Contrast.o Contrast.cpp
 
 obj/moc_MainWindow.o: moc/moc_MainWindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_MainWindow.o moc/moc_MainWindow.cpp
+
+obj/moc_qcustomplot.o: moc/moc_qcustomplot.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_qcustomplot.o moc/moc_qcustomplot.cpp
 
 obj/moc_Dummy.o: moc/moc_Dummy.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/moc_Dummy.o moc/moc_Dummy.cpp
