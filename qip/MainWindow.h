@@ -81,6 +81,7 @@ private:
 	QAction*		m_actionContrast ;
     QAction*		m_actionGamma ;
     QAction*		m_actionQuantization ;
+    QAction*		m_actionHistogramStrech ;
 
 	// homework objects
 	ImageFilter*		m_imageFilterType[MAXFILTERS];

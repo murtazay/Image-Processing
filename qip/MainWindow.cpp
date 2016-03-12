@@ -13,10 +13,11 @@
 #include "Contrast.h"
 #include "Gamma.h"
 #include "Quantization.h"
+#include "Histogramstrech.h"
 
 using namespace IP;
 
-enum {DUMMY, THRESHOLD, CONTRAST, GAMMA, QUANTIZATION};
+enum {DUMMY, THRESHOLD, CONTRAST, GAMMA, QUANTIZATION,HISTOSTRECH};
 enum {RGB, R, G, B, GRAY};
 
 QString GroupBoxStyle = "QGroupBox {				\
@@ -83,11 +84,15 @@ MainWindow::createActions()
 
     m_actionGamma = new QAction("&Gamma", this);
     m_actionGamma->setShortcut(tr("Ctrl+G"));
-    m_actionGamma->setData(CONTRAST);
+    m_actionGamma->setData(GAMMA);
 
     m_actionQuantization = new QAction("&Quantization", this);
     m_actionQuantization->setShortcut(tr("Ctrl+U"));
-    m_actionQuantization->setData(CONTRAST);
+    m_actionQuantization->setData(QUANTIZATION);
+
+    m_actionHistogramStrech = new QAction("&Histogram Strech", this);
+    m_actionHistogramStrech->setShortcut(tr("Ctrl+S"));
+    m_actionHistogramStrech->setData(HISTOSTRECH);
 
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
@@ -115,6 +120,7 @@ MainWindow::createMenus()
 	m_menuPtOps->addAction(m_actionContrast );
     m_menuPtOps->addAction(m_actionGamma );
     m_menuPtOps->addAction(m_actionQuantization );
+    m_menuPtOps->addAction(m_actionHistogramStrech );
 }
 
 
@@ -161,6 +167,7 @@ MainWindow::createGroupPanel()
     m_imageFilterType[CONTRAST      ] = new Contrast;
     m_imageFilterType[GAMMA         ] = new Gamma;
     m_imageFilterType[QUANTIZATION  ] = new Quantization;
+    m_imageFilterType[HISTOSTRECH   ] = new HistogramStrech;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -171,6 +178,7 @@ MainWindow::createGroupPanel()
     m_stackWidgetPanels->addWidget(m_imageFilterType[CONTRAST     ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[GAMMA        ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[HISTOSTRECH  ]->controlPanel());
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(0);

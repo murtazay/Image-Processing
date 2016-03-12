@@ -37,7 +37,8 @@ HEADERS +=	MainWindow.h	\
 		Threshold.h	\
 		Contrast.h	\
     Gamma.h \
-    Quantization.h
+    Quantization.h \
+    Histogramstrech.h
 
 		
 SOURCES +=	main.cpp	\ 
@@ -48,5 +49,6 @@ SOURCES +=	main.cpp	\
 		Threshold.cpp	\
 		Contrast.cpp	\
     Gamma.cpp \
-    Quantization.cpp
+    Quantization.cpp \
+    Histogramstrech.cpp
 

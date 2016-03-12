@@ -41,22 +41,24 @@ QGroupBox *Gamma::controlPanel()
 
     // create sliders
     m_slider = new QSlider(Qt::Horizontal, m_ctrlGrp);
-    m_slider->setMinimum(-5);
-    m_slider->setMaximum( 5);
-    m_slider->setValue(3);
+    m_slider->setMinimum(-30);
+    m_slider->setMaximum( 30);
+    m_slider->setValue(30);
     m_slider->setTickPosition(QSlider::TicksBelow);
-    m_slider->setTickInterval(1);
+    m_slider->setSingleStep(1);
+    m_slider->setTickInterval(5);
 
     // create spinbox
-    m_spinBox = new QSpinBox(m_ctrlGrp);
-    m_spinBox->setMinimum(-5);
-    m_spinBox->setMaximum( 5);
-    m_spinBox->setValue(3);
+    m_spinBox = new QDoubleSpinBox(m_ctrlGrp);
+    m_spinBox->setDecimals(1);
+    m_spinBox->setSingleStep(.1f);
+    m_spinBox->setMinimum(-3.f);
+    m_spinBox->setMaximum( 3.f);
+    m_spinBox->setValue(3.f);
 
     // init signal/slot connections
-    connect(m_slider , SIGNAL(valueChanged(int)),      this,  SLOT(setAlpha(int)));
-    connect(m_slider , SIGNAL(valueChanged(int)), m_spinBox,  SLOT(setValue(int)));
-    connect(m_spinBox, SIGNAL(valueChanged(int)), m_slider ,  SLOT(setValue(int)));
+    connect(m_slider  , SIGNAL(valueChanged(int)),         this,  SLOT(setGamma(int)));
+    connect(m_spinBox , SIGNAL(valueChanged(double)),      this,  SLOT(setGamma(double)));
 
     // assemble dialog
     QGridLayout *layout = new QGridLayout;
@@ -83,12 +85,11 @@ bool Gamma::applyFilter(ImagePtr I1, ImagePtr I2)
     if(I1.isNull()) return 0;
 
     // get level value
-    int alpha = m_slider->value();
-    double a = (double) alpha;
+    double g = (double) m_slider->value()/10;
 
 
     // apply filter
-    gamma(I1, a, I2);
+    gamma(I1, g, I2);
 
     return 1;
 }
@@ -108,7 +109,7 @@ void Gamma::reset()
 //
 // INSERT YOUR CODE HERE.
 //
-void Gamma::gamma(ImagePtr I1, double alpha, ImagePtr I2)
+void Gamma::gamma(ImagePtr I1, double gamma, ImagePtr I2)
 {
     IP_copyImageHeader(I1, I2);
     int w = I1->width();
@@ -119,8 +120,7 @@ void Gamma::gamma(ImagePtr I1, double alpha, ImagePtr I2)
     int i;
     double lut[MXGRAY];
     for(i=0;i<MXGRAY;++i){
-        lut[i] = pow((double)i/MXGRAY, 1/alpha) * MXGRAY;
-        //lut[i] = MXGRAY * ((i/MXGRAY)^(1/alpha));
+        lut[i] = pow((double)i/MXGRAY, 1/gamma) * MXGRAY;
     }
 
     int type;
@@ -132,12 +132,32 @@ void Gamma::gamma(ImagePtr I1, double alpha, ImagePtr I2)
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Gamma::changeAlpha:
+// Gamma::changeGamma:
 //
-// Slot to process change in alp caused by moving the slider.
+// Slot to process change in gam caused by moving the slider.
 //
-void Gamma::setAlpha(int alp)
+void Gamma::setGamma(int gam)
 {
+    double g = (double) gam/10;
+    m_spinBox->setValue(g);
+
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Gamma::changeGamma:
+//
+// Slot to process change in gam caused by moving the slider.
+//
+void Gamma::setGamma(double gam)
+{
+    int g = (int) (gam*10);
+    m_slider->setValue(g);
+
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

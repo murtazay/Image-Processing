@@ -2,37 +2,37 @@
 // IMPROC: Image Processing Software Package
 // Copyright (C) 2016 by George Wolberg
 //
-// Gamma.h - Gamma widget
+// HistogramStrech.h - Histogram Strech widget
 //
-// Written  by: Murtaza Yaqoob, 2016
+// Written by: Murtaza Yaqoob, 2016
 // ======================================================================
-#ifndef GAMMA_H
-#define GAMMA_H
+#ifndef HISTOGRAMSTRECH_H
+#define HISTOGRAMSTRECH_H
 
 #include "ImageFilter.h"
 
-class Gamma : public ImageFilter {
-    Q_OBJECT
+enum{MIN,MAX};
 
+class HistogramStrech : public ImageFilter {
+    Q_OBJECT
 public:
-    Gamma       (QWidget *parent = 0          );    // constructor
+    HistogramStrech       (QWidget *parent = 0);    // constructor
     QGroupBox*	controlPanel	             ();	// create control panel
     bool		applyFilter(ImagePtr, ImagePtr);    // apply filter to input to init output
     void		reset		                 ();	// reset parameters
 
 protected:
-    void gamma(ImagePtr I1, double alpha, ImagePtr I2);
+    void histstrech(ImagePtr I1, int minGray, int maxGray, ImagePtr I2);
 
 protected slots:
-    void setGamma(int);
-    void setGamma(double);
+    void setMin(int);
+    void setMax(int);
 
 private:
-
-    QSlider             *m_slider ;
-    QDoubleSpinBox      *m_spinBox;
+    QSlider  *m_slider [2];
+    QSpinBox *m_spinBox[2];
     // widgets and groupbox
     QGroupBox	*m_ctrlGrp;	// groupbox for panel
 };
 
-#endif // GAMMA_H
+#endif // HISTOGRAMSTRECH_H
