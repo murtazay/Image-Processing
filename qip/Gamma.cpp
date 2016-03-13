@@ -62,9 +62,9 @@ QGroupBox *Gamma::controlPanel()
 
     // assemble dialog
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(    label, 0, 0);
-    layout->addWidget( m_slider, 0, 1);
-    layout->addWidget(m_spinBox, 0, 2);
+    layout->addWidget(    label, 1, 0);
+    layout->addWidget( m_slider, 1, 1);
+    layout->addWidget(m_spinBox, 1, 2);
 
     // assign layout to group box
     m_ctrlGrp->setLayout(layout);

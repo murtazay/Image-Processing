@@ -73,15 +73,16 @@ protected:
 
 
 private:
-	QMenu*			m_menuFile;
-	QMenu*			m_menuPtOps;
-	QAction*		m_actionOpen;
-	QAction*		m_actionQuit;
-	QAction*		m_actionThreshold;
-	QAction*		m_actionContrast ;
-    QAction*		m_actionGamma ;
-    QAction*		m_actionQuantization ;
+    QMenu*			m_menuFile              ;
+    QMenu*			m_menuPtOps             ;
+    QAction*		m_actionOpen            ;
+    QAction*		m_actionQuit            ;
+    QAction*		m_actionThreshold       ;
+    QAction*		m_actionContrast        ;
+    QAction*		m_actionGamma           ;
+    QAction*		m_actionQuantization    ;
     QAction*		m_actionHistogramStrech ;
+    QAction*		m_actionHistogramMatch  ;
 
 	// homework objects
 	ImageFilter*		m_imageFilterType[MAXFILTERS];

@@ -8,7 +8,7 @@
 // ======================================================================
 
 #include "MainWindow.h"
-#include "Histogramstrech.h"
+#include "HistogramStrech.h"
 #include "IPdefs.h"
 
 extern MainWindow *g_mainWindowP;
@@ -21,7 +21,7 @@ HistogramStrech::HistogramStrech(QWidget *parent)
 QGroupBox *HistogramStrech::controlPanel()
 {
     // init group box
-    m_ctrlGrp = new QGroupBox("Gamma Correction");
+    m_ctrlGrp = new QGroupBox("Histogram Streching");
 
     // INSERT YOUR CODE HERE
     // init widgets
@@ -117,16 +117,7 @@ void HistogramStrech::histstrech(ImagePtr I1, int minGray, int maxGray, ImagePtr
     int i;
     double lut[MXGRAY];
     for(i=0;i<MXGRAY;++i){
-        int j = (255*(i-minGray)/(maxGray-minGray));
-        if(j < 0){
-            lut[i] = 0;
-        }
-        else if(j > 255){
-            lut[i] = 255;
-        }
-        else{
-            lut[i] = j;
-        }
+        lut[i] = CLIP((255*(i-minGray)/(maxGray-minGray)),0,255);
     }
 
     int type;

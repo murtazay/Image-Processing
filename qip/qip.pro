@@ -38,7 +38,8 @@ HEADERS +=	MainWindow.h	\
 		Contrast.h	\
     Gamma.h \
     Quantization.h \
-    Histogramstrech.h
+    HistogramMatching.h \
+    HistogramStrech.h
 
 		
 SOURCES +=	main.cpp	\ 
@@ -50,5 +51,6 @@ SOURCES +=	main.cpp	\
 		Contrast.cpp	\
     Gamma.cpp \
     Quantization.cpp \
-    Histogramstrech.cpp
+    HistogramMatching.cpp \
+    HistogramStrech.cpp
 
