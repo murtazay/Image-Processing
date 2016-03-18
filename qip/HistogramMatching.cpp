@@ -115,7 +115,7 @@ void HistogramMatching::histmatch(ImagePtr I1, int deg, ImagePtr I2)
         }
     }
     // Scale h2
-    double scale = ceil((double) total/Havg);
+    double scale = round((double) total/Havg);
     if(scale != 1){
         for(int i = 0; i < MXGRAY; ++i){
             h2[i] = round(h2[i] * scale);

@@ -33,13 +33,13 @@ QGroupBox *HistogramStrech::controlPanel()
     // create sliders
     m_slider[MIN] = new QSlider(Qt::Horizontal, m_ctrlGrp);
     m_slider[MIN]->setMinimum(0);
-    m_slider[MIN]->setMaximum(255);
+    m_slider[MIN]->setMaximum(254);
     m_slider[MIN]->setTickPosition(QSlider::TicksBelow);
     m_slider[MIN]->setTickInterval(32);
     m_slider[MIN]->setValue(0);
 
     m_slider[MAX] = new QSlider(Qt::Horizontal, m_ctrlGrp);
-    m_slider[MAX]->setMinimum(0);
+    m_slider[MAX]->setMinimum(1);
     m_slider[MAX]->setMaximum(255);
     m_slider[MAX]->setTickPosition(QSlider::TicksBelow);
     m_slider[MAX]->setTickInterval(32);
@@ -48,23 +48,21 @@ QGroupBox *HistogramStrech::controlPanel()
     // create spinboxes
     m_spinBox[MIN] = new QSpinBox(m_ctrlGrp);
     m_spinBox[MIN]->setMinimum(0);
-    m_spinBox[MIN]->setMaximum(255);
+    m_spinBox[MIN]->setMaximum(254);
     m_spinBox[MIN]->setValue(0);
 
     m_spinBox[MAX] = new QSpinBox(m_ctrlGrp);
-    m_spinBox[MAX]->setMinimum(0);
+    m_spinBox[MAX]->setMinimum(1);
     m_spinBox[MAX]->setMaximum(255);
     m_spinBox[MAX]->setValue(255);
 
     // init signal/slot connections
     connect(m_slider [MIN], SIGNAL(valueChanged(int)), this,            SLOT(setMin(int)));
-    connect(m_slider [MIN], SIGNAL(valueChanged(int)), m_spinBox[MIN],  SLOT(setValue(int)));
-    connect(m_spinBox[MIN], SIGNAL(valueChanged(int)), m_slider [MIN],  SLOT(setValue(int)));
+    connect(m_spinBox[MIN], SIGNAL(valueChanged(int)), this,            SLOT(setMin(int)));
 
 
     connect(m_slider [MAX], SIGNAL(valueChanged(int)), this,            SLOT(setMax(int)));
-    connect(m_slider [MAX], SIGNAL(valueChanged(int)), m_spinBox[MAX],  SLOT(setValue(int)));
-    connect(m_spinBox[MAX], SIGNAL(valueChanged(int)), m_slider [MAX],  SLOT(setValue(int)));
+    connect(m_spinBox[MAX], SIGNAL(valueChanged(int)), this,            SLOT(setMax(int)));
 
     // assemble dialog
     QGridLayout *layout = new QGridLayout;
@@ -130,6 +128,11 @@ void HistogramStrech::histstrech(ImagePtr I1, int minGray, int maxGray, ImagePtr
 
 void HistogramStrech::setMin(int min)
 {
+    if(min >= m_slider[MAX]->value()){
+        min = m_slider[MAX]->value()-1;
+    }
+    m_slider[MIN]->setValue(min);
+    m_spinBox[MIN]->setValue(min);
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 
@@ -139,6 +142,11 @@ void HistogramStrech::setMin(int min)
 
 void HistogramStrech::setMax(int max)
 {
+    if(max <= m_slider[MIN]->value()){
+        max = m_slider[MIN]->value()+1;
+    }
+    m_slider[MAX]->setValue(max);
+    m_spinBox[MAX]->setValue(max);;
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 
