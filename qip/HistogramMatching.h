@@ -23,7 +23,7 @@ protected:
     void histmatch(ImagePtr I1, int deg, ImagePtr I2);
 
 protected slots:
-    void setDeg(int);
+    void setExp(int);
 
 private:
     QSlider  *m_slider;
