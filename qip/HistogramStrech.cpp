@@ -94,60 +94,8 @@ bool HistogramStrech::applyFilter(ImagePtr I1, ImagePtr I2)
     if(I1.isNull()) return 0;
 
     // get level value
-    int max;
-    if(!m_maxAuto){
-        max = m_slider[MAX]->value();
-    }
-    else{
-        int w = I1->width();
-        int h = I1->height();
-        int total = w * h;
-        int h1[MXGRAY];
-
-        // Generate H1 histogram
-        for(int i = 0; i < MXGRAY; ++i){
-            h1[i]=0;
-        }
-        int type;
-        ChannelPtr<uchar> p1, endd;
-        for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
-            for(endd = p1 + total; p1<endd;){
-               h1[*p1++]++;
-            }
-            int i = MXGRAY-1;
-            while(h1[i] <= 0){
-                --i;
-            }
-            max = i;
-        }
-    }
-    int min;
-    if(!m_minAuto){
-        min = m_slider[MIN]->value();
-    }
-    else{
-        int w = I1->width();
-        int h = I1->height();
-        int total = w * h;
-        int h1[MXGRAY];
-
-        // Generate H1 histogram
-        for(int i = 0; i < MXGRAY; ++i){
-            h1[i]=0;
-        }
-        int type;
-        ChannelPtr<uchar> p1, endd;
-        for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
-            for(endd = p1 + total; p1<endd;){
-               h1[*p1++]++;
-            }
-            int i = 0;
-            while(h1[i] <= 0){
-                ++i;
-            }
-            min = i;
-        }
-    }
+    int max = m_slider[MAX]->value();
+    int min = m_slider[MIN]->value();
     if(min > max || min == max){
         return 0;
     }
@@ -171,19 +119,44 @@ void HistogramStrech::histstrech(ImagePtr I1, int minGray, int maxGray, ImagePtr
     int h = I1->height();
     int total = w * h;
 
-    // compute lut[]
-    int i;
-    double lut[MXGRAY];
-    for(i=0;i<MXGRAY;++i){
-        lut[i] = CLIP((255*(i-minGray)/(maxGray-minGray)),0,255);
-    }
-
     int type;
     ChannelPtr<uchar> p1, p2, endd;
-    for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
+    for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++){
+        int h1[MXGRAY];
+        // Generate H1 histogram
+        for(int i = 0; i < MXGRAY; ++i){
+            h1[i]=0;
+        }
+        for(endd = p1 + total; p1<endd;){
+           h1[*p1++]++;
+        }
+        if(m_maxAuto){
+            int i = MXGRAY - 1;
+            while(h1[i] <= 0){
+                --i;
+            }
+            maxGray = i;
+        }
+        if(m_minAuto){
+            int i = 0;
+            while(h1[i] <= 0){
+                ++i;
+            }
+            minGray = i;
+        }
+        // compute lut[]
+        int i;
+        double lut[MXGRAY];
+        for(i=0;i<MXGRAY;++i){
+            lut[i] = CLIP((255*(i-minGray)/(maxGray-minGray)),0,255);
+        }
+        IP_getChannel(I1, ch, p1, type);
         IP_getChannel(I2, ch, p2, type);
-        for(endd = p1 + total; p1<endd;) *p2++ = lut[*p1++];
+        for(endd = p1 + total; p1<endd;) {
+            *p2++ = lut[*p1++];
+        }
     }
+
 }
 
 void HistogramStrech::setMin(int min)
