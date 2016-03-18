@@ -15,7 +15,8 @@ extern MainWindow *g_mainWindowP;
 
 HistogramStrech::HistogramStrech(QWidget *parent)
 {
-
+    m_minAuto = false;
+    m_maxAuto = false;
 }
 
 QGroupBox *HistogramStrech::controlPanel()
@@ -56,22 +57,29 @@ QGroupBox *HistogramStrech::controlPanel()
     m_spinBox[MAX]->setMaximum(255);
     m_spinBox[MAX]->setValue(255);
 
+    // create checkboxes
+    m_checkBox[MIN] = new QCheckBox("Auto");
+    m_checkBox[MAX] = new QCheckBox("Auto");
+
     // init signal/slot connections
-    connect(m_slider [MIN], SIGNAL(valueChanged(int)), this,            SLOT(setMin(int)));
-    connect(m_spinBox[MIN], SIGNAL(valueChanged(int)), this,            SLOT(setMin(int)));
+    connect( m_slider [MIN], SIGNAL(valueChanged(int)), this, SLOT(setMin(int)));
+    connect( m_spinBox[MIN], SIGNAL(valueChanged(int)), this, SLOT(setMin(int)));
+    connect(m_checkBox[MIN], SIGNAL(toggled(bool))    , this, SLOT(setMinAuto(bool)));
 
-
-    connect(m_slider [MAX], SIGNAL(valueChanged(int)), this,            SLOT(setMax(int)));
-    connect(m_spinBox[MAX], SIGNAL(valueChanged(int)), this,            SLOT(setMax(int)));
+    connect( m_slider [MAX], SIGNAL(valueChanged(int)), this, SLOT(setMax(int)));
+    connect( m_spinBox[MAX], SIGNAL(valueChanged(int)), this, SLOT(setMax(int)));
+    connect(m_checkBox[MAX], SIGNAL(toggled(bool))    , this, SLOT(setMaxAuto(bool)));
 
     // assemble dialog
     QGridLayout *layout = new QGridLayout;
-    layout->addWidget(    label[MIN], 0, 0);
-    layout->addWidget( m_slider[MIN], 0, 1);
-    layout->addWidget(m_spinBox[MIN], 0, 2);
-    layout->addWidget(    label[MAX], 1, 0);
-    layout->addWidget( m_slider[MAX], 1, 1);
-    layout->addWidget(m_spinBox[MAX], 1, 2);
+    layout->addWidget(     label[MIN], 0, 0);
+    layout->addWidget(  m_slider[MIN], 0, 1);
+    layout->addWidget( m_spinBox[MIN], 0, 2);
+    layout->addWidget(m_checkBox[MIN], 0, 3);
+    layout->addWidget(     label[MAX], 1, 0);
+    layout->addWidget(  m_slider[MAX], 1, 1);
+    layout->addWidget( m_spinBox[MAX], 1, 2);
+    layout->addWidget(m_checkBox[MAX], 1, 3);
 
     // assign layout to group box
     m_ctrlGrp->setLayout(layout);
@@ -86,8 +94,60 @@ bool HistogramStrech::applyFilter(ImagePtr I1, ImagePtr I2)
     if(I1.isNull()) return 0;
 
     // get level value
-    int min = m_slider[MIN]->value();
-    int max = m_slider[MAX]->value();
+    int max;
+    if(!m_maxAuto){
+        max = m_slider[MAX]->value();
+    }
+    else{
+        int w = I1->width();
+        int h = I1->height();
+        int total = w * h;
+        int h1[MXGRAY];
+
+        // Generate H1 histogram
+        for(int i = 0; i < MXGRAY; ++i){
+            h1[i]=0;
+        }
+        int type;
+        ChannelPtr<uchar> p1, endd;
+        for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
+            for(endd = p1 + total; p1<endd;){
+               h1[*p1++]++;
+            }
+            int i = MXGRAY-1;
+            while(h1[i] <= 0){
+                --i;
+            }
+            max = i;
+        }
+    }
+    int min;
+    if(!m_minAuto){
+        min = m_slider[MIN]->value();
+    }
+    else{
+        int w = I1->width();
+        int h = I1->height();
+        int total = w * h;
+        int h1[MXGRAY];
+
+        // Generate H1 histogram
+        for(int i = 0; i < MXGRAY; ++i){
+            h1[i]=0;
+        }
+        int type;
+        ChannelPtr<uchar> p1, endd;
+        for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
+            for(endd = p1 + total; p1<endd;){
+               h1[*p1++]++;
+            }
+            int i = 0;
+            while(h1[i] <= 0){
+                ++i;
+            }
+            min = i;
+        }
+    }
     if(min > max || min == max){
         return 0;
     }
@@ -108,7 +168,7 @@ void HistogramStrech::histstrech(ImagePtr I1, int minGray, int maxGray, ImagePtr
 {
     IP_copyImageHeader(I1, I2);
     int w = I1->width();
-    int h = I2->height();
+    int h = I1->height();
     int total = w * h;
 
     // compute lut[]
@@ -147,6 +207,44 @@ void HistogramStrech::setMax(int max)
     }
     m_slider[MAX]->setValue(max);
     m_spinBox[MAX]->setValue(max);;
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void HistogramStrech::setMinAuto(bool min)
+{
+    m_minAuto = min;
+    if(m_minAuto){
+        m_slider [MIN]->setEnabled(false);
+        m_spinBox[MIN]->setEnabled(false);
+    }
+    else{
+        m_slider [MIN]->setEnabled(true);
+        m_spinBox[MIN]->setEnabled(true);
+    }
+
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void HistogramStrech::setMaxAuto(bool max)
+{
+    m_maxAuto = max;
+    if(m_maxAuto){
+        m_slider [MAX]->setEnabled(false);
+        m_spinBox[MAX]->setEnabled(false);
+    }
+    else{
+        m_slider [MAX]->setEnabled(true);
+        m_spinBox[MAX]->setEnabled(true);
+    }
+
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

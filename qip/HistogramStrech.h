@@ -27,10 +27,15 @@ protected:
 protected slots:
     void setMin(int);
     void setMax(int);
+    void setMinAuto(bool);
+    void setMaxAuto(bool);
 
 private:
-    QSlider  *m_slider [2];
-    QSpinBox *m_spinBox[2];
+    QSlider     *m_slider [2];
+    QSpinBox    *m_spinBox[2];
+    QCheckBox   *m_checkBox[2];
+    bool         m_minAuto;
+    bool         m_maxAuto;
     // widgets and groupbox
     QGroupBox	*m_ctrlGrp;	// groupbox for panel
 };

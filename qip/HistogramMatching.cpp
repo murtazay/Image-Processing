@@ -173,10 +173,10 @@ void HistogramMatching::histmatch(ImagePtr I1, int deg, ImagePtr I2)
         }
 
         // Do histogram matching
-        ChannelPtr<uchar> p2,p3;
+        ChannelPtr<uchar> p2,p3,endd2;
         IP_getChannel(I1,ch,p3,type);
         IP_getChannel(I2,ch,p2,type);
-        for(endd = p3 + total; p3<endd;){
+        for(endd2 = p3 + total; p3<endd2;){
             int p = left[*p3];
             if(reserves[p][*p3] > 0){
                 *p2 = p;
@@ -195,9 +195,6 @@ void HistogramMatching::histmatch(ImagePtr I1, int deg, ImagePtr I2)
             *p3++;
             *p2++;
         }
-//        for(int ch = 0; IP_getChannel(I1, ch, p3, type); ch++) {
-//            IP_getChannel(I2, ch, p2, type);
-//        }
     }
 
 }
