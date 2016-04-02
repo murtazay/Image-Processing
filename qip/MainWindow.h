@@ -75,6 +75,7 @@ protected:
 private:
     QMenu*			m_menuFile              ;
     QMenu*			m_menuPtOps             ;
+    QMenu*          m_menuNeighborOps       ;
     QAction*		m_actionOpen            ;
     QAction*		m_actionQuit            ;
     QAction*		m_actionThreshold       ;
@@ -83,6 +84,9 @@ private:
     QAction*		m_actionQuantization    ;
     QAction*		m_actionHistogramStrech ;
     QAction*		m_actionHistogramMatch  ;
+    QAction*        m_actionBlur            ;
+    QAction*        m_actionSharpen         ;
+    QAction*        m_actionMedian          ;
 
 	// homework objects
 	ImageFilter*		m_imageFilterType[MAXFILTERS];

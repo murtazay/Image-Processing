@@ -19,7 +19,8 @@
 using namespace IP;
 
 enum {DUMMY, THRESHOLD, CONTRAST, GAMMA,
-      QUANTIZATION,HISTOSTRECH, HISTOMATCH};
+      QUANTIZATION,HISTOSTRECH, HISTOMATCH,
+      BLUR, SHARPEN, MEDIAN};
 enum {RGB, R, G, B, GRAY};
 
 QString GroupBoxStyle = "QGroupBox {				\
@@ -92,13 +93,29 @@ MainWindow::createActions()
     m_actionQuantization->setShortcut(tr("Ctrl+U"));
     m_actionQuantization->setData(QUANTIZATION);
 
-    m_actionHistogramStrech = new QAction("&Histogram Strech", this);
-    m_actionHistogramStrech->setShortcut(tr("Ctrl+S"));
+    m_actionHistogramStrech = new QAction("Histogram &Strech", this);
+    m_actionHistogramStrech->setShortcut(tr("Ctrl+H+S"));
     m_actionHistogramStrech->setData(HISTOSTRECH);
 
-    m_actionHistogramMatch = new QAction("&Histogram Match", this);
-    m_actionHistogramMatch->setShortcut(tr("Ctrl+S"));
+    m_actionHistogramMatch = new QAction("Histogram &Match", this);
+    m_actionHistogramMatch->setShortcut(tr("Ctrl+H+M"));
     m_actionHistogramMatch->setData(HISTOMATCH);
+
+    //////////////////////////////
+    // Neighbor Ops Actions
+    //////////////////////////////
+
+    m_actionBlur = new QAction("&Blur", this);
+    m_actionBlur->setShortcut(tr("Ctrl+B"));
+    m_actionBlur->setData(BLUR);
+
+    m_actionSharpen = new QAction("&Sharpen", this);
+    m_actionSharpen->setShortcut(tr("Ctrl+S"));
+    m_actionSharpen->setData(SHARPEN);
+
+    m_actionMedian = new QAction("&Median", this);
+    m_actionMedian->setShortcut(tr("Ctrl+M"));
+    m_actionBlur->setData(BLUR);
 
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
@@ -128,6 +145,12 @@ MainWindow::createMenus()
     m_menuPtOps->addAction(m_actionQuantization );
     m_menuPtOps->addAction(m_actionHistogramStrech );
     m_menuPtOps->addAction(m_actionHistogramMatch );
+
+    // Neighbor Ops menu
+    m_menuNeighborOps = menuBar()->addMenu("&Neighbor Ops");
+    m_menuNeighborOps->addAction(m_actionBlur);
+    m_menuNeighborOps->addAction(m_actionSharpen);
+    m_menuNeighborOps->addAction(m_actionMedian);
 }
 
 
