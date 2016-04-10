@@ -58,6 +58,10 @@ QGroupBox *Blur::controlPanel()
         m_spinBox[1]->setMaximum(15);
         m_spinBox[1]->setValue(3);
 
+        // create checkbox
+        m_checkBox = new QCheckBox("Link");
+        m_checkBox->setChecked(false);
+
         // init signal/slot connections
         connect(m_slider[0]  , SIGNAL(valueChanged(int)),         this,   SLOT(setXSize(int)));
         connect(m_slider[0]  , SIGNAL(valueChanged(int)), m_spinBox[0],   SLOT(setValue(int)));
@@ -67,6 +71,8 @@ QGroupBox *Blur::controlPanel()
         connect(m_slider[1]  , SIGNAL(valueChanged(int)), m_spinBox[1],   SLOT(setValue(int)));
         connect(m_spinBox[1] , SIGNAL(valueChanged(int)), m_slider[1] ,   SLOT(setValue(int)));
 
+        connect(m_checkBox   , SIGNAL(clicked(bool))    ,         this,   SLOT(setLink(bool)));
+
         // assemble dialog
         QGridLayout *layout = new QGridLayout;
         layout->addWidget(      labelx, 1, 0);
@@ -75,6 +81,7 @@ QGroupBox *Blur::controlPanel()
         layout->addWidget(      labely, 2, 0);
         layout->addWidget( m_slider[1], 2, 1);
         layout->addWidget(m_spinBox[1], 2, 2);
+        layout->addWidget(m_checkBox  , 3, 0);
 
         // assign layout to group box
         m_ctrlGrp->setLayout(layout);
@@ -180,6 +187,26 @@ void Blur::setXSize(int)
 
 void Blur::setYSize(int)
 {
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void Blur::setLink(bool)
+{
+    if(m_checkBox->isChecked()){
+        m_slider[1]->setValue(m_slider[0]->value());
+        m_slider[1]->setEnabled(false);
+        m_spinBox[1]->setEnabled(false);
+        connect(m_slider[0], SIGNAL(valueChanged(int)), m_slider[1], SLOT(setValue(int)));
+    }
+    else{
+        m_slider[1]->setEnabled(true);
+        m_spinBox[1]->setEnabled(true);
+        disconnect(m_slider[0], SIGNAL(valueChanged(int)), m_slider[1], SLOT(setValue(int)));
+    }
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

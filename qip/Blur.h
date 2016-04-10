@@ -26,6 +26,7 @@ protected:
 protected slots:
     void setXSize(int);
     void setYSize(int);
+    void setLink(bool);
 
 private:
     QSlider     *m_slider[2];
