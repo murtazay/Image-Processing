@@ -39,7 +39,8 @@ HEADERS +=	MainWindow.h	\
     Gamma.h \
     Quantization.h \
     HistogramMatching.h \
-    HistogramStrech.h
+    HistogramStrech.h \
+    Blur.h \
 
 		
 SOURCES +=	main.cpp	\ 
@@ -52,5 +53,6 @@ SOURCES +=	main.cpp	\
     Gamma.cpp \
     Quantization.cpp \
     HistogramMatching.cpp \
-    HistogramStrech.cpp
+    HistogramStrech.cpp \
+    Blur.cpp \
 

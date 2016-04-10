@@ -15,6 +15,7 @@
 #include "Quantization.h"
 #include "HistogramStrech.h"
 #include "HistogramMatching.h"
+#include "Blur.h"
 
 using namespace IP;
 
@@ -199,6 +200,7 @@ MainWindow::createGroupPanel()
     m_imageFilterType[QUANTIZATION  ] = new Quantization;
     m_imageFilterType[HISTOSTRECH   ] = new HistogramStrech;
     m_imageFilterType[HISTOMATCH    ] = new HistogramMatching;
+    m_imageFilterType[BLUR          ] = new Blur;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -211,6 +213,7 @@ MainWindow::createGroupPanel()
     m_stackWidgetPanels->addWidget(m_imageFilterType[QUANTIZATION ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[HISTOSTRECH  ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[HISTOMATCH   ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[BLUR         ]->controlPanel());
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(0);
