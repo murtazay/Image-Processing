@@ -108,10 +108,10 @@ void Sharpen::sharpen(ImagePtr I1, double size, double factor, ImagePtr I2)
     int h = I2->height();
     int total = w * h;
 
+    blur(I1,size,size,I2);
     int type;
     ChannelPtr<uchar> p1, p2, endd;
     for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch){
-        blur(I1,size,size,I2);
         IP_getChannel(I2,ch,p2,type);
         for(endd = p1 + total; p1 < endd;){
             float tmp = factor * (*p1-*p2);
@@ -173,7 +173,7 @@ void Sharpen::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, dou
             for(int j = i-pad; j <= i+pad; ++j){
                 sum += tmp[j];
             }
-            *(dest+i-pad) = (double) sum / (double) filterSize;
+            *(dest+(amount*(i-pad))) = (double) sum / (double) filterSize;
         }
     }
     else{
@@ -181,7 +181,7 @@ void Sharpen::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, dou
             tmp[pad+i] = *(src+i);
         }
         for(int i = pad; i > 0; --i){
-            tmp[i] = tmp[i];
+            tmp[i-1] = tmp[i];
             tmp[tmpSize - i] = tmp[tmpSize - i - 1];
         }
         for(int i = pad; i < amount+pad; ++i){

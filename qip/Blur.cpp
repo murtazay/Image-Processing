@@ -155,7 +155,7 @@ void Blur::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, double
             for(int j = i-pad; j <= i+pad; ++j){
                 sum += tmp[j];
             }
-            *(dest+i-pad) = (double) sum / (double) filterSize;
+            *(dest+(amount*(i-pad))) = (double) sum / (double) filterSize;
         }
     }
     else{
@@ -163,7 +163,7 @@ void Blur::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, double
             tmp[pad+i] = *(src+i);
         }
         for(int i = pad; i > 0; --i){
-            tmp[i] = tmp[i];
+            tmp[i-1] = tmp[i];
             tmp[tmpSize - i] = tmp[tmpSize - i - 1];
         }
         for(int i = pad; i < amount+pad; ++i){
