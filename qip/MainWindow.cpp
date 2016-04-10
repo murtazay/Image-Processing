@@ -17,6 +17,7 @@
 #include "HistogramMatching.h"
 #include "Blur.h"
 #include "Sharpen.h"
+#include "Median.h"
 
 using namespace IP;
 
@@ -203,6 +204,7 @@ MainWindow::createGroupPanel()
     m_imageFilterType[HISTOMATCH    ] = new HistogramMatching;
     m_imageFilterType[BLUR          ] = new Blur;
     m_imageFilterType[SHARPEN       ] = new Sharpen;
+    m_imageFilterType[MEDIAN        ] = new Median;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -217,6 +219,7 @@ MainWindow::createGroupPanel()
     m_stackWidgetPanels->addWidget(m_imageFilterType[HISTOMATCH   ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[BLUR         ]->controlPanel());
     m_stackWidgetPanels->addWidget(m_imageFilterType[SHARPEN      ]->controlPanel());
+    m_stackWidgetPanels->addWidget(m_imageFilterType[MEDIAN       ]->controlPanel());
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(0);

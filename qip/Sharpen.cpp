@@ -20,7 +20,7 @@ Sharpen::Sharpen(QWidget *parent)
 QGroupBox *Sharpen::controlPanel()
 {
     // init group box
-    m_ctrlGrp = new QGroupBox("Blur");
+    m_ctrlGrp = new QGroupBox("Sharpen");
 
     // INSERT YOUR CODE HERE
     // init widgets
