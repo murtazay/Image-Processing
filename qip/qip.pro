@@ -41,6 +41,7 @@ HEADERS +=	MainWindow.h	\
     HistogramMatching.h \
     HistogramStrech.h \
     Blur.h \
+    Sharpen.h
 
 		
 SOURCES +=	main.cpp	\ 
@@ -55,4 +56,5 @@ SOURCES +=	main.cpp	\
     HistogramMatching.cpp \
     HistogramStrech.cpp \
     Blur.cpp \
+    Sharpen.cpp
 
