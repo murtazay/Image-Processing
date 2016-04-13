@@ -25,7 +25,9 @@ protected:
 
 protected slots:
     void setXSize(int);
+    void setXSpin(int);
     void setYSize(int);
+    void setYSpin(int);
     void setLink(bool);
 
 private:

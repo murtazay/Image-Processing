@@ -26,6 +26,7 @@ protected:
 
 protected slots:
     void setSize(int);
+    void setSpin(int);
     void setFactor(int);
 
 private:

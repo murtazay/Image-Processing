@@ -118,7 +118,7 @@ MainWindow::createActions()
 
     m_actionMedian = new QAction("&Median", this);
     m_actionMedian->setShortcut(tr("Ctrl+M"));
-    m_actionBlur->setData(BLUR);
+    m_actionMedian->setData(MEDIAN);
 
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered

@@ -32,18 +32,18 @@ QGroupBox *Blur::controlPanel()
 
         // create sliders
         m_slider[0] = new QSlider(Qt::Horizontal, m_ctrlGrp);
-        m_slider[0]->setMinimum(3);
-        m_slider[0]->setMaximum(15);
-        m_slider[0]->setValue(3);
+        m_slider[0]->setMinimum(1);
+        m_slider[0]->setMaximum(7);
+        m_slider[0]->setValue(1);
         m_slider[0]->setTickPosition(QSlider::TicksBelow);
-        m_slider[0]->setTickInterval(2);
+        m_slider[0]->setTickInterval(1);
 
         m_slider[1] = new QSlider(Qt::Horizontal, m_ctrlGrp);
-        m_slider[1]->setMinimum(3);
-        m_slider[1]->setMaximum(15);
-        m_slider[1]->setValue(3);
+        m_slider[1]->setMinimum(1);
+        m_slider[1]->setMaximum(7);
+        m_slider[1]->setValue(1);
         m_slider[1]->setTickPosition(QSlider::TicksBelow);
-        m_slider[1]->setTickInterval(2);
+        m_slider[1]->setTickInterval(1);
 
         // create spinbox
         m_spinBox[0] = new QSpinBox(m_ctrlGrp);
@@ -64,12 +64,10 @@ QGroupBox *Blur::controlPanel()
 
         // init signal/slot connections
         connect(m_slider[0]  , SIGNAL(valueChanged(int)),         this,   SLOT(setXSize(int)));
-        connect(m_slider[0]  , SIGNAL(valueChanged(int)), m_spinBox[0],   SLOT(setValue(int)));
-        connect(m_spinBox[0] , SIGNAL(valueChanged(int)), m_slider[0] ,   SLOT(setValue(int)));
+        connect(m_spinBox[0] , SIGNAL(valueChanged(int)),         this,   SLOT(setXSpin(int)));
 
         connect(m_slider[1]  , SIGNAL(valueChanged(int)),         this,   SLOT(setYSize(int)));
-        connect(m_slider[1]  , SIGNAL(valueChanged(int)), m_spinBox[1],   SLOT(setValue(int)));
-        connect(m_spinBox[1] , SIGNAL(valueChanged(int)), m_slider[1] ,   SLOT(setValue(int)));
+        connect(m_spinBox[1] , SIGNAL(valueChanged(int)),         this,   SLOT(setYSpin(int)));
 
         connect(m_checkBox   , SIGNAL(clicked(bool))    ,         this,   SLOT(setLink(bool)));
 
@@ -106,8 +104,8 @@ bool Blur::applyFilter(ImagePtr I1, ImagePtr I2)
 
 void Blur::reset()
 {
-    m_slider[0]->setValue(3);
-    m_slider[1]->setValue(3);
+    m_slider[0]->setValue(1);
+    m_slider[1]->setValue(1);
 }
 
 void Blur::blur(ImagePtr I1, double xSize, double ySize, ImagePtr I2)
@@ -178,6 +176,17 @@ void Blur::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, double
 
 void Blur::setXSize(int)
 {
+    m_spinBox[0]->setValue((m_slider[0]->value() * 2) + 1);
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void Blur::setXSpin(int)
+{
+    m_slider[0]->setValue((m_spinBox[0]->value()-1)/2);
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 
@@ -187,6 +196,17 @@ void Blur::setXSize(int)
 
 void Blur::setYSize(int)
 {
+    m_spinBox[1]->setValue((m_slider[1]->value() * 2) + 1);
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void Blur::setYSpin(int)
+{
+    m_slider[1]->setValue((m_spinBox[1]->value()-1)/2);
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

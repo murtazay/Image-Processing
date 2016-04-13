@@ -32,11 +32,11 @@ QGroupBox *Sharpen::controlPanel()
 
     // create sliders
     m_slider[0] = new QSlider(Qt::Horizontal, m_ctrlGrp);
-    m_slider[0]->setMinimum(3);
-    m_slider[0]->setMaximum(15);
-    m_slider[0]->setValue(3);
+    m_slider[0]->setMinimum(1);
+    m_slider[0]->setMaximum(7);
+    m_slider[0]->setValue(1);
     m_slider[0]->setTickPosition(QSlider::TicksBelow);
-    m_slider[0]->setTickInterval(2);
+    m_slider[0]->setTickInterval(1);
 
     m_slider[1] = new QSlider(Qt::Horizontal, m_ctrlGrp);
     m_slider[1]->setMinimum(1);
@@ -59,8 +59,7 @@ QGroupBox *Sharpen::controlPanel()
 
     // init signal/slot connections
     connect(m_slider[0]  , SIGNAL(valueChanged(int)),         this,   SLOT(setSize(int)));
-    connect(m_slider[0]  , SIGNAL(valueChanged(int)), m_spinBox[0],   SLOT(setValue(int)));
-    connect(m_spinBox[0] , SIGNAL(valueChanged(int)), m_slider[0] ,   SLOT(setValue(int)));
+    connect(m_spinBox[0] , SIGNAL(valueChanged(int)),         this,   SLOT(setSpin(int)));
 
     connect(m_slider[1]  , SIGNAL(valueChanged(int)),         this,   SLOT(setFactor(int)));
     connect(m_slider[1]  , SIGNAL(valueChanged(int)), m_spinBox[1],   SLOT(setValue(int)));
@@ -196,6 +195,17 @@ void Sharpen::blr(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, int stride, dou
 
 void Sharpen::setSize(int)
 {
+    m_spinBox[0]->setValue(m_slider[0]->value()*2+1);
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void Sharpen::setSpin(int)
+{
+    m_slider[0]->setValue((m_spinBox[0]->value()-1)/2);
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

@@ -2,21 +2,23 @@
 // IMPROC: Image Processing Software Package
 // Copyright (C) 2016 by Murtaza Yaqoob
 //
-// Sharpen.cpp - Sharpen widget.
+// Median.cpp - Median widget.
 //
 // Written  by: Murtaza Yaqoob, 2016
 // ======================================================================
-
-#include "MainWindow.h"
 #include "Median.h"
+#include "MainWindow.h"
 #include <algorithm>
+
+extern MainWindow *g_mainWindowP;
 
 Median::Median(QWidget *parent)
 {
 
 }
 
-QGroupBox *Median::controlPanel()
+QGroupBox*
+Median::controlPanel()
 {
     // init group box
     m_ctrlGrp = new QGroupBox("Median");
@@ -27,15 +29,15 @@ QGroupBox *Median::controlPanel()
     QLabel *labelx = new QLabel;
     labelx->setText("Filter Size");
     QLabel *labely = new QLabel;
-    labely->setText("Factor");
+    labely->setText("Average");
 
     // create sliders
     m_slider[0] = new QSlider(Qt::Horizontal, m_ctrlGrp);
-    m_slider[0]->setMinimum(3);
-    m_slider[0]->setMaximum(7);
-    m_slider[0]->setValue(3);
+    m_slider[0]->setMinimum(1);
+    m_slider[0]->setMaximum(3);
+    m_slider[0]->setValue(1);
     m_slider[0]->setTickPosition(QSlider::TicksBelow);
-    m_slider[0]->setTickInterval(2);
+    m_slider[0]->setTickInterval(1);
 
     m_slider[1] = new QSlider(Qt::Horizontal, m_ctrlGrp);
     m_slider[1]->setMinimum(0);
@@ -58,8 +60,7 @@ QGroupBox *Median::controlPanel()
 
     // init signal/slot connections
     connect(m_slider[0]  , SIGNAL(valueChanged(int)),         this,   SLOT(setSize(int)));
-    connect(m_slider[0]  , SIGNAL(valueChanged(int)), m_spinBox[0],   SLOT(setValue(int)));
-    connect(m_spinBox[0] , SIGNAL(valueChanged(int)), m_slider[0] ,   SLOT(setValue(int)));
+    connect(m_spinBox[0] , SIGNAL(valueChanged(int)),         this,   SLOT(setSpin(int)));
 
     connect(m_slider[1]  , SIGNAL(valueChanged(int)),         this,   SLOT(setAverage(int)));
     connect(m_slider[1]  , SIGNAL(valueChanged(int)), m_spinBox[1],   SLOT(setValue(int)));
@@ -78,7 +79,7 @@ QGroupBox *Median::controlPanel()
     return(m_ctrlGrp);
 }
 
-bool Median::applyFilter(ImagePtr, ImagePtr)
+bool Median::applyFilter(ImagePtr I1, ImagePtr I2)
 {
     // INSERT YOUR CODE HERE
     // error checking
@@ -90,37 +91,188 @@ bool Median::applyFilter(ImagePtr, ImagePtr)
 
     // apply filter
     median(I1,sz,av,I2);
-
     return 1;
 }
 
 void Median::reset()
 {
-    m_slider[0]->setValue(3);
-    m_slider[1]->setValue(0);
+    m_spinBox[0]->setValue(3);
+    m_spinBox[1]->setValue(0);
 }
 
 void Median::median(ImagePtr I1, double size, double average, ImagePtr I2)
 {
-   IP_copyImageHeader(I1, I2);
-   int w = I1->width();
-   int h = I2->height();
-   int total = w * h;
+    IP_copyImageHeader(I1, I2);
+    int w = I1->width();
+    int h = I2->height();
 
-   int type;
-   ChannelPtr<uchar> p1, p2;
-   for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch){
-        IP_getChannel(I2,ch,p2,type);
-        for(int i = 0; i < h; ++i){
-            med(p1, p2, w, size, w, average);
-            p1++;
-            p2++;
+    int type;
+    int pad = (size-1)/2;
+    ChannelPtr<uchar> p1, p2;
+    QVector<uchar*> buffer;
+    for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch){
+         IP_getChannel(I2,ch,p2,type);
+         for(int i = 0; i < h; ++i){
+             if(i < pad){
+                 med(p1, p2, size, w, h, average,i, buffer);
+             }
+             else if(i > h-pad){
+                 med(p1, p2, size, w, h, average,i, buffer);
+             }
+             else{
+                 med(p1, p2, size, w, h, average,i, buffer);
+             }
+             p1 += w;
+             p2 += w;
+         }
+    }
+}
+
+void Median::med(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, double size, int amount, int height,double average, int flag, QVector<uchar*>& buffer)
+{
+    int pad     = (size - 1)/2;
+    int tmpSize = (pad*2) + amount;
+    int replace = (flag % (int)size);
+    uchar tmp[tmpSize];
+    if(flag < pad){
+        if (buffer.empty()){
+            // add padding rows
+            for(int i = 0; i < pad; ++i){
+                for(int j = 0; j < amount; ++j){
+                    tmp[pad+j] = *(src+j);
+                }
+                for(int j = pad; j > 0; --j){
+                    tmp[j-1] = tmp[j];
+                    tmp[tmpSize -j] = tmp[tmpSize - j - 1];
+                }
+                buffer.append(tmp);
+            }
+            // add the other rows as needed
+            for(int i = 0; i < size-pad; ++i){
+                for(int j = 0; j < amount; ++j){
+                    tmp[pad+j] = *(src+(amount*i)+j);
+                }
+                for(int j = pad; j > 0; --j){
+                    tmp[j-1] = tmp[j];
+                    tmp[tmpSize -j] = tmp[tmpSize - j - 1];
+                }
+                buffer.append(tmp);
+            }
+            // start computing the median
+            int tSize = (size*size-1)/2;
+            int denom = (2*average) + 1;
+            for(int column = pad; column < amount+pad; ++column){
+                QVector<uchar> median;
+                int sum = 0;
+                for(int i = 0; i < size; ++i){
+                    for(int j = -pad; j <= pad; ++j){
+                        median.push_back(buffer[i][j + column + pad]);
+                    }
+                }
+                std::sort(median.begin(),median.end());
+                for(int i = -average; i <= average; ++i){
+                    sum += median[i+tSize];
+                }
+                *(dest+column-pad) = (double) sum / (double)denom;
+            }
         }
-   }
+        else{
+            for(int i = 0; i < amount; ++i){
+                tmp[pad+i] = *(src+i);
+            }
+            for(int i = pad; i > 0; --i){
+                tmp[i-1] = tmp[i];
+                tmp[tmpSize -i] = tmp[tmpSize - i - 1];
+            }
+            buffer.replace(replace,tmp);
+            // start computing the median
+            int tSize = (size*size-1)/2;
+            int denom = (2*average) + 1;
+            for(int column = pad; column < amount+pad; ++column){
+                QVector<uchar> median;
+                int sum = 0;
+                for(int i = 0; i < size; ++i){
+                    for(int j = -pad; j <= pad; ++j){
+                        median.push_back(buffer[i][j + column + pad]);
+                    }
+                }
+                std::sort(median.begin(),median.end());
+                for(int i = -average; i <= average; ++i){
+                    sum += median[i+tSize];
+                }
+                *(dest+column-pad) = (double) sum / (double)denom;
+            }
+        }
+    }
+    else if(flag > height-pad){
+        for(int i = 0; i < amount; ++i){
+            tmp[pad+i] = *(src+i);
+        }
+        for(int i = pad; i > 0; --i){
+            tmp[i-1] = tmp[i];
+            tmp[tmpSize -i] = tmp[tmpSize - i - 1];
+        }
+        buffer.replace(replace,tmp);
+        // start computing the median
+        int tSize = (size*size-1)/2;
+        int denom = (2*average) + 1;
+        for(int column = pad; column < amount+pad; ++column){
+            QVector<uchar> median;
+            int sum = 0;
+            for(int i = 0; i < size; ++i){
+                for(int j = -pad; j <= pad; ++j){
+                    median.push_back(buffer[i][j + column + pad]);
+                }
+            }
+            std::sort(median.begin(),median.end());
+            for(int i = -average; i <= average; ++i){
+                sum += median[i+tSize];
+            }
+            *(dest+column-pad) = (double) sum / (double)denom;
+        }
+    }
+    else{
+        for(int i = 0; i < amount; ++i){
+            tmp[pad+i] = *(src+i);
+        }
+        for(int i = pad; i > 0; --i){
+            tmp[i-1] = tmp[i];
+            tmp[tmpSize -i] = tmp[tmpSize - i - 1];
+        }
+        buffer.replace(replace,tmp);
+        // start computing the median
+        int tSize = (size*size-1)/2;
+        int denom = (2*average) + 1;
+        for(int column = pad; column < amount+pad; ++column){
+            QVector<uchar> median;
+            int sum = 0;
+            for(int i = 0; i < size; ++i){
+                for(int j = -pad; j <= pad; ++j){
+                    median.push_back(buffer[i][j + column + pad]);
+                }
+            }
+            std::sort(median.begin(),median.end());
+            for(int i = -average; i <= average; ++i){
+                sum += median[i+tSize];
+            }
+            *(dest+column-pad) = (double) sum / (double)denom;
+        }
+    }
 }
 
 void Median::setSize(int)
 {
+    m_spinBox[0]->setValue((m_slider[0]->value() * 2) + 1);
+    // apply filter to source image; save result in destination image
+    applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
+
+    // display output
+    g_mainWindowP->displayOut();
+}
+
+void Median::setSpin(int)
+{
+    m_slider[0]->setValue((m_spinBox[0]->value()-1)/2);
     // apply filter to source image; save result in destination image
     applyFilter(g_mainWindowP->imageSrc(), g_mainWindowP->imageDst());
 

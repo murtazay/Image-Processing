@@ -14,23 +14,25 @@
 class Median : public ImageFilter{
     Q_OBJECT
 public:
-    Median(QWidget *parent = 0);                    // constructor
-    QGroupBox*	controlPanel	             ();	// create control panel
-    bool		applyFilter(ImagePtr, ImagePtr);    // apply filter to input to init output
-    void		reset		                 ();	// reset parameters
+   Median(QWidget *parent = 0);                    // constructor
+   QGroupBox*	controlPanel	             ();	// create control panel
+   bool		applyFilter(ImagePtr, ImagePtr);    // apply filter to input to init output
+   void		reset		                 ();	// reset parameters
 
 protected:
-    void median(ImagePtr I1, double size, double average, ImagePtr I2);
+   void median(ImagePtr I1, double size, double average, ImagePtr I2);
+   void med(ChannelPtr<uchar> src, ChannelPtr<uchar> dest, double size, int amount, int height,double average, int flag, QVector<uchar*>& buffer);
 
 protected slots:
-    void setSize(int);
-    void setAverage(int);
+   void setSize(int);
+   void setSpin(int);
+   void setAverage(int);
 
 private:
 
-    QSlider     *m_slider[2];
-    QSpinBox    *m_spinBox[2];
-    QGroupBox	*m_ctrlGrp;	// groupbox for panel
+   QSlider     *m_slider[2];
+   QSpinBox    *m_spinBox[2];
+   QGroupBox	*m_ctrlGrp;	// groupbox for pane
 };
 
 #endif // MEDIAN_H
